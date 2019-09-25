@@ -58,8 +58,10 @@ class ExampleController {
   async show ({ params, request, response, view }) {//ver por id
     try {
       const data = request.all()
-      const userExists = await User.findBy('id',data.id)
+      // const userExists = await User.findBy('id',data.id)
+      const userExists = await User.findOrFail(params.id)
       if(userExists){
+        console.log('user exist')
         return userExists;
       }
       return response.send({message:'No Existe'})

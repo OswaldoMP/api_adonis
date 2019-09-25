@@ -7,6 +7,8 @@
 /**
  * Resourceful controller for interacting with inventories
  */
+const Inventorie = use('App/Models/Inventorie')
+
 class InventorieController {
   /**
    * Show a list of all inventories.
@@ -18,6 +20,8 @@ class InventorieController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    const inventorieExists = Inventorie.all()
+    return inventorieExists;
   }
 
   /**
@@ -41,6 +45,14 @@ class InventorieController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+    try {
+      const data = request.all()
+      // const inventorieExists = await Inventorie.findBy('product_id',data.product_id)
+      const newInventorie = await Inventorie.create(data)
+      return newInventorie
+    } catch (error) {
+      return response.send(error)
+    }
   }
 
   /**
@@ -53,6 +65,16 @@ class InventorieController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    try {
+      const data = request.all()
+      const newInventorie = await Inventorie.findBy('id',data.id)
+      if(newInventorie){
+        return newInventorie
+      }
+      return response.send({message:{error:'Inventorie no Existe'}})
+    } catch (error) {
+      return response.send(error)
+    }
   }
 
   /**
@@ -87,6 +109,17 @@ class InventorieController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    try {
+      const data = request.all()
+      const newInventorie = await Inventorie.findBy('id',data.id)
+      if(newInventorie){
+        await newInventorie.delete()
+        return newInventorie
+      }
+      return response.send({message:{error:'Inventorie no Existe'}})
+    } catch (error) {
+      return response.send(error)
+    }
   }
 }
 

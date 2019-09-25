@@ -21,13 +21,14 @@ Route.get('/', () => {
 })
 
 
-Route.group(()=>{
-  Route.get('/','UserController.index')//ver todo
-  Route.post('/','UserController.store')//crear
-  Route.get('/:id','UserController.show')//ver uno
-  Route.put('/:id','UserController.update')//editar
-  Route.delete('/:id','UserController.destroy')
-}).prefix('api/v1/users');
+// Route.group(()=>{
+//   Route.get('/','UserController.index')//ver todo
+//   Route.post('/','UserController.store')//crear
+//   Route.get('/:id','UserController.show')//ver uno
+//   Route.put('/:id','UserController.update')//editar
+//   Route.delete('/:id','UserController.destroy')
+// }).prefix('api/v1/users');
 
 
-Route.resource('api/v1/ejemplo','ExampleController').apiOnly();
+Route.resource('api/v1/users','UserController').apiOnly();
+Route.resource('api/v1/inventories','InventorieController').apiOnly();
