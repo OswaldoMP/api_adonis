@@ -96,6 +96,20 @@ class ProductController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    try {
+      const data = request.all()
+      const productExists = await Product.findBy('id',params.id)//verificar si el usuario ya existe
+      if(productExists){
+        productExists.merge(data)
+        await productExists.save()
+        // productExists = await product.create(data)//Usuario creado
+        // return response.status(201).send({message:{status:'SUCCESSFUL'}}).json(productExists);
+        return productExists;
+      }
+      return response.send({message:{erro:'product  no Existente'}})
+    } catch (error) {
+      return response.send(error)
+    }
   }
 
   /**

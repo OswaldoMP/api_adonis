@@ -112,8 +112,11 @@ class UserController {
       const data = request.all()
       const userExists = await User.findBy('id',params.id)//verificar si el usuario ya existe
       if(userExists){
-        userExists = await User.create(data)//Usuario creado
-        return response.status(201).send({message:{status:'SUCCESSFUL'}});
+        userExists.merge(data)
+        await userExists.save()
+        // userExists = await User.create(data)//Usuario creado
+        // return response.status(201).send({message:{status:'SUCCESSFUL'}}).json(userExists);
+        return userExists;
       }
       return response.send({message:{erro:'User  no Existente'}})
     } catch (error) {

@@ -8,6 +8,7 @@
  * Resourceful controller for interacting with inventories
  */
 const Inventorie = use('App/Models/Inventorie')
+const Transaction = use('App/Models/Transaction')
 
 class InventorieController {
   /**
@@ -53,8 +54,16 @@ class InventorieController {
   async store ({ request, response }) {
     try {
       const data = request.all()
-      // const inventorieExists = await Inventorie.findBy('product_id',data.product_id)
+      
+      // const inventorieExists = await Inventorie.findBy('inventorie_id',data.inventorie_id)
       const newInventorie = await Inventorie.create(data)
+      var quantity = ""+data.quantity
+      var id = ""+newInventorie.id
+      var type = ""+1
+
+      console.log(id,type,quantity);
+      var transaction = [id,type,quantity]
+      const newTransaction = await Transaction.create(transaction);
       return response.json(newInventorie)
     } catch (error) {
       return response.send(error)
@@ -105,6 +114,20 @@ class InventorieController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    try {
+      const data = request.all()
+      const inventorieExists = await Inventorie.findBy('id',params.id)//verificar si el usuario ya existe
+      if(inventorieExists){
+        inventorieExists.merge(data)
+        await inventorieExists.save()
+        // inventorieExists = await inventorie.create(data)//Usuario creado
+        // return response.status(201).send({message:{status:'SUCCESSFUL'}}).json(inventorieExists);
+        return inventorieExists;
+      }
+      return response.send({message:{erro:'inventorie  no Existente'}})
+    } catch (error) {
+      return response.send(error)
+    }
   }
 
   /**
