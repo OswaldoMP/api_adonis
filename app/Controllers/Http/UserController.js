@@ -107,7 +107,21 @@ class UserController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    
+    try {
+      const data = request.all()
+      const userExists = await User.findBy('id',params.id)//verificar si el usuario ya existe
+      if(userExists){
+        userExists = await User.create(data)//Usuario creado
+        return response.status(201).send({message:{status:'SUCCESSFUL'}});
+      }
+      return response.send({message:{erro:'User  no Existente'}})
+    } catch (error) {
+      return response.send(error)
+    }
+
   }
+
 
   /**
    * Delete a user with id.

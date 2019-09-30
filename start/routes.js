@@ -32,3 +32,4 @@ Route.get('/', () => {
 
 Route.resource('api/v1/users','UserController').apiOnly();
 Route.resource('api/v1/inventories','InventorieController').apiOnly();
+Route.resource('api/v1/products','ProductController').apiOnly();

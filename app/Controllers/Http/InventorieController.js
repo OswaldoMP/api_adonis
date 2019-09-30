@@ -20,7 +20,13 @@ class InventorieController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
-    const inventorieExists = Inventorie.all()
+    // const inventorieExists = Inventorie.all()
+    const inventorieExists = await Inventorie
+    .query()
+    .with('product')
+    .with('user')
+    // .with('transaction')
+    .fetch()
     return inventorieExists;
   }
 
@@ -49,7 +55,7 @@ class InventorieController {
       const data = request.all()
       // const inventorieExists = await Inventorie.findBy('product_id',data.product_id)
       const newInventorie = await Inventorie.create(data)
-      return newInventorie
+      return response.json(newInventorie)
     } catch (error) {
       return response.send(error)
     }
@@ -66,9 +72,10 @@ class InventorieController {
    */
   async show ({ params, request, response, view }) {
     try {
-      const data = request.all()
-      const newInventorie = await Inventorie.findBy('id',data.id)
+      // const data = request.all()
+      const newInventorie = await Inventorie.findBy('id',params.id)
       if(newInventorie){
+        // const newInventorie = await newInventorie.query().with('user').fetch()
         return newInventorie
       }
       return response.send({message:{error:'Inventorie no Existe'}})
@@ -110,8 +117,8 @@ class InventorieController {
    */
   async destroy ({ params, request, response }) {
     try {
-      const data = request.all()
-      const newInventorie = await Inventorie.findBy('id',data.id)
+      // const data = request.all()
+      const newInventorie = await Inventorie.findBy('id',params.id)
       if(newInventorie){
         await newInventorie.delete()
         return newInventorie

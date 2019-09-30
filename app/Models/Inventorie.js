@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class Inventorie extends Model {
 
-    producto(){
+    product(){
         return this.belongsTo('App/Models/Product') 
     }
 

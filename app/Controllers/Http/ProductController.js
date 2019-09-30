@@ -7,6 +7,8 @@
 /**
  * Resourceful controller for interacting with products
  */
+const Product = use('App/Models/Product');
+
 class ProductController {
   /**
    * Show a list of all products.
@@ -18,6 +20,8 @@ class ProductController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    const productAll = Product.all()
+    return productAll;
   }
 
   /**
@@ -41,6 +45,17 @@ class ProductController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+    try {
+      const data = request.all()
+      const newProduct = await Product.findBy('code',data.code);
+      if (newProduct) {
+        return response.send({message:{status:'Existente'}})
+      }
+      newProduct = await Product.create(data);
+      return response.send({message:{status:'SUCCESSFUL'}})
+    } catch (error) {
+      return response.send(error)
+    }
   }
 
   /**
@@ -53,6 +68,11 @@ class ProductController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    const productId = await Product.findBy('id',params.id)
+    if(productId){
+      return productId
+    }
+    return response.send({message:{status:'No successful'}})
   }
 
   /**
@@ -87,6 +107,12 @@ class ProductController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    const productId = await Product.findBy('id',params.id)
+    if(productId){
+      await productId.delete()
+      return productId
+    }
+    return response.send({message:{status:'No successful'}})
   }
 }
 

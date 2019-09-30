@@ -40,7 +40,7 @@ class User extends Model {
   }
 
   inventory(){
-    return this.hasMany('App/Models/Inventory')
+    return this.hasMany('App/Models/Inventorie')
   }
 }
 
