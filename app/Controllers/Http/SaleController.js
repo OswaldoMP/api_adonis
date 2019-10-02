@@ -7,6 +7,14 @@
 /**
  * Resourceful controller for interacting with sales
  */
+const Sale = use('App/Models/Sale')
+// productu_id
+// user_id
+// quantity
+// total
+// Date
+// paymethod
+// status
 class SaleController {
   /**
    * Show a list of all sales.
@@ -18,6 +26,12 @@ class SaleController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    try {
+      const sale = await Sale.all();
+      return sale;
+    } catch (error) {
+      return response.send(error);
+    }
   }
 
   /**
@@ -41,6 +55,17 @@ class SaleController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+    try {
+      data = request.all()
+      const sale = await Sale.findBy('id',data.id)
+      if (sale) {
+        return response.send({message:{status:'existing sale'}})
+      }
+      sale = await Sale.create(data)
+      return response.json(sale)
+    } catch (error) {
+      return response.send(error)
+    }
   }
 
   /**

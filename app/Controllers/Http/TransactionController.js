@@ -7,6 +7,8 @@
 /**
  * Resourceful controller for interacting with transactions
  */
+const Transaction = use('App/Models/Transaction')
+
 class TransactionController {
   /**
    * Show a list of all transactions.
@@ -18,6 +20,11 @@ class TransactionController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    const transactionAll = await Transaction.query()
+    .with('inventory')
+    .fetch()
+    // const transactionAll = await Transaction.all()
+    return transactionAll;
   }
 
   /**
@@ -53,6 +60,12 @@ class TransactionController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    try {
+      const transaction = await Transaction.findBy('id',params.id)
+      return transaction;
+    } catch (error) {
+      return response.send(error)
+    }
   }
 
   /**

@@ -9,6 +9,9 @@
  */
 const Product = use('App/Models/Product');
 
+const Inventorie = use('App/Models/Inventorie')
+const Transaction = use('App/Models/Transaction')
+
 class ProductController {
   /**
    * Show a list of all products.
@@ -47,12 +50,35 @@ class ProductController {
   async store ({ request, response }) {
     try {
       const data = request.all()
+      // const dataProduct = request.only(['code','name','description','image'])
+      // const dataInventory = request.only([''])
       const newProduct = await Product.findBy('code',data.code);
       if (newProduct) {
         return response.send({message:{status:'Existente'}})
       }
-      newProduct = await Product.create(data);
-      return response.send({message:{status:'SUCCESSFUL'}})
+      const product = new Product()
+      const inventory = new Inventorie()
+      const transaction = new Transaction()
+      //product
+      product.code = data.code
+      product.name = data.name
+      product.description = data.description
+      product.image = data.image
+      await product.save();
+      //Inventory
+      inventory.product_id = product.id
+      inventory.user_id =  data.user_id
+      inventory.quantity = data.quantity
+      inventory.price = data.price
+      inventory.tax = data.tax
+      await inventory.save();//create inventory
+      //Transaction
+      transaction.inventory_id = inventory.id
+      transaction.type = 1
+      transaction.quantity = request.input('quantity')
+      await transaction.save();//create transaction
+      return response.json(product);
+
     } catch (error) {
       return response.send(error)
     }

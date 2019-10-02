@@ -52,22 +52,7 @@ class InventorieController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    try {
-      const data = request.all()
-      
-      // const inventorieExists = await Inventorie.findBy('inventorie_id',data.inventorie_id)
-      const newInventorie = await Inventorie.create(data)
-      var quantity = ""+data.quantity
-      var id = ""+newInventorie.id
-      var type = ""+1
 
-      console.log(id,type,quantity);
-      var transaction = [id,type,quantity]
-      const newTransaction = await Transaction.create(transaction);
-      return response.json(newInventorie)
-    } catch (error) {
-      return response.send(error)
-    }
   }
 
   /**
