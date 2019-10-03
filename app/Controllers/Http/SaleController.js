@@ -88,6 +88,7 @@ class SaleController {
       sale.user_id = data.user_id
       sale.quantity = data.quantity
       sale.discount = data.discount
+      sale.status = 'Pagado'
       sale.total = total
       sale.paymenth_method = data.paymenth_method
       await sale.save();
@@ -130,6 +131,28 @@ class SaleController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    //const data = request.all()
+    const sale = await Sale.findBy('id',params.id)
+    console.log(sale)
+    if(sale){
+      var newQuantity
+      const transaction = new Transaction()
+      // const inventory = new Inventory()
+      console.log(sale.product_id)
+      const inventory = await Inventory.findBy('product_id',sale.product_id)
+      console.log('bien')
+      newQuantity = inventory.quantity + sale.quantity;
+      sale.status = 'CANCEL'
+      inventory.quantity = newQuantity
+      transaction.quantity = sale.quantity
+      transaction.inventory_id = inventory.id
+      transaction.type = 3
+      transaction.save();
+      inventory.save();
+      sale.save();
+      return response.json(sale);
+    }
+    return response.send({message:{status:'No existe'}})
   }
 
   /**
@@ -141,6 +164,12 @@ class SaleController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    const sale = await Sale.findBy('id',params.id)
+    if(sale){
+      await sale.delete()
+      return sale
+    }
+    return response.send({message:{status:'No successful'}})
   }
 }
 

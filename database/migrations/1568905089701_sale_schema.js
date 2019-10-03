@@ -12,6 +12,7 @@ class SaleSchema extends Schema {
       table.integer('user_id').unsigned().references('id').inTable('users')
       table.integer('quantity').unsigned()
       table.float('discount').unsigned()
+      table.string('status')
       table.float('total')
       table.integer('paymenth_method').unsigned()
 

@@ -147,6 +147,10 @@ class UserController {
       return response.send(error)
     }
   }
+
+  async login({response}){
+    
+  }
 }
 
 module.exports = UserController

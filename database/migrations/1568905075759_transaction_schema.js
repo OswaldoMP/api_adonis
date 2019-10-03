@@ -10,7 +10,7 @@ class TransactionSchema extends Schema {
       table.integer('inventory_id').unsigned().references('id').inTable('inventories')
       table.integer('type').unsigned()
       table.integer('quantity').unsigned()
-      table.date('date')
+      // table.date('date')
       table.text('description')
 
       table.timestamps('created_at')
