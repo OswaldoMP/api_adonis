@@ -84,7 +84,7 @@ class SaleController {
         if (data.discount > 0) {
           total = (total*data.discount)/100;
         }
-      sale.product_id = data.product_id
+      sale.product_id = inventory.product_id
       sale.user_id = data.user_id
       sale.quantity = data.quantity
       sale.discount = data.discount
