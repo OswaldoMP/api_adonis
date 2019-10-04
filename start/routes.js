@@ -35,3 +35,5 @@ Route.resource('api/v1/inventories','InventorieController').apiOnly();
 Route.resource('api/v1/products','ProductController').apiOnly();
 Route.resource('api/v1/transactions','TransactionController').apiOnly();
 Route.resource('api/v1/sales','SaleController').apiOnly();
+
+Route.post('api/v1/login','UserController.login');

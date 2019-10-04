@@ -11,13 +11,7 @@ const Sale = use('App/Models/Sale')
 const Inventory = use('App/Models/Inventorie')
 const Transaction = use('App/Models/Transaction')
 const Product = use ('App/Models/Product')
-// productu_id
-// user_id
-// quantity
-// total
-// Date
-// paymethod
-// status
+
 class SaleController {
   /**
    * Show a list of all sales.

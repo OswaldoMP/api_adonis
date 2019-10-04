@@ -47,9 +47,12 @@ class ProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response,auth }) {
     try {
+      const user = await auth.getUser();
+      console.log(user)
       const data = request.all()
+      console.log(data)
       // const dataProduct = request.only(['code','name','description','image'])
       // const dataInventory = request.only([''])
       const newProduct = await Product.findBy('code',data.code);
@@ -59,6 +62,7 @@ class ProductController {
       const product = new Product()
       const inventory = new Inventorie()
       const transaction = new Transaction()
+      console.log('bien')
       //product
       product.code = data.code
       product.name = data.name
@@ -67,7 +71,7 @@ class ProductController {
       await product.save();
       //Inventory
       inventory.product_id = product.id
-      inventory.user_id =  data.user_id
+      inventory.user_id =  user.id
       inventory.quantity = data.quantity
       inventory.price = data.price
       inventory.tax = data.tax
