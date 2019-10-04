@@ -50,38 +50,41 @@ class ProductController {
   async store ({ request, response,auth }) {
     try {
       const user = await auth.getUser();
-      console.log(user)
-      const data = request.all()
-      console.log(data)
-      // const dataProduct = request.only(['code','name','description','image'])
-      // const dataInventory = request.only([''])
-      const newProduct = await Product.findBy('code',data.code);
-      if (newProduct) {
-        return response.send({message:{status:'Existente'}})
+      if (user.rol == 1) {
+        // console.log(user)
+        const data = request.all()
+        // console.log(data)
+        // const dataProduct = request.only(['code','name','description','image'])
+        // const dataInventory = request.only([''])
+        const newProduct = await Product.findBy('code',data.code);
+        if (newProduct) {
+          return response.send({message:{status:'Existente'}})
+        }
+        const product = new Product()
+        const inventory = new Inventorie()
+        const transaction = new Transaction()
+        // console.log('bien')
+        //product
+        product.code = data.code
+        product.name = data.name
+        product.description = data.description
+        product.image = data.image
+        await product.save();
+        //Inventory
+        inventory.product_id = product.id
+        inventory.user_id =  user.id
+        inventory.quantity = data.quantity
+        inventory.price = data.price
+        inventory.tax = data.tax
+        await inventory.save();//create inventory
+        //Transaction
+        transaction.inventory_id = inventory.id
+        transaction.type = 1
+        transaction.quantity = request.input('quantity')
+        await transaction.save();//create transaction
+        return response.json(product);
       }
-      const product = new Product()
-      const inventory = new Inventorie()
-      const transaction = new Transaction()
-      console.log('bien')
-      //product
-      product.code = data.code
-      product.name = data.name
-      product.description = data.description
-      product.image = data.image
-      await product.save();
-      //Inventory
-      inventory.product_id = product.id
-      inventory.user_id =  user.id
-      inventory.quantity = data.quantity
-      inventory.price = data.price
-      inventory.tax = data.tax
-      await inventory.save();//create inventory
-      //Transaction
-      transaction.inventory_id = inventory.id
-      transaction.type = 1
-      transaction.quantity = request.input('quantity')
-      await transaction.save();//create transaction
-      return response.json(product);
+      return response.send({message:{status:'NO Auth'}})
 
     } catch (error) {
       return response.send(error)
@@ -150,14 +153,17 @@ class ProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
-    const productId = await Product.findBy('id',params.id)
-    if(productId){
-      await productId.delete()
-      return productId
+  async destroy ({ params, request, response,auth }) {
+    const user = await auth.getUser();
+    if (user.rol == 1) {
+      const productId = await Product.findBy('id',params.id)
+      if(productId){
+        await productId.delete()
+        return productId
+      }
+      return response.send({message:{status:'No successful'}})
     }
-    return response.send({message:{status:'No successful'}})
-  }
+    }
 }
 
 module.exports = ProductController

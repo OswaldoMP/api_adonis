@@ -51,7 +51,8 @@ class SaleController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response, auth }) {
+    const user = await auth.getUser();
     var newQuantity = 0
     var oldQantity = 0
     var total = 0
@@ -76,10 +77,11 @@ class SaleController {
       //sale
       total = (((inventory.price * inventory.tax)/100)+inventory.price) * data.quantity
         if (data.discount > 0) {
-          total = (total*data.discount)/100;
+          var des = (total*data.discount)/100;
+          total = total - des;
         }
       sale.product_id = inventory.product_id
-      sale.user_id = data.user_id
+      sale.user_id = user.id
       sale.quantity = data.quantity
       sale.discount = data.discount
       sale.status = 'Pagado'
@@ -124,8 +126,10 @@ class SaleController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request, response, auth }) {
     //const data = request.all()
+    const user = await auth.getUser();
+    if (user.rol == 1) {
     const sale = await Sale.findBy('id',params.id)
     console.log(sale)
     if(sale){
@@ -147,6 +151,8 @@ class SaleController {
       return response.json(sale);
     }
     return response.send({message:{status:'No existe'}})
+    }
+    return response.send({message:{status:'No Auth'}})
   }
 
   /**
@@ -157,13 +163,17 @@ class SaleController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
-    const sale = await Sale.findBy('id',params.id)
-    if(sale){
-      await sale.delete()
-      return sale
+  async destroy ({ params, request, response,auth }) {
+    const user = await auth.getUser();
+    if (user.rol == 1) {
+      const sale = await Sale.findBy('id',params.id)
+      if(sale){
+        await sale.delete()
+        return sale
+      }
+      return response.send({message:{status:'No successful'}})
+  
     }
-    return response.send({message:{status:'No successful'}})
   }
 }
 

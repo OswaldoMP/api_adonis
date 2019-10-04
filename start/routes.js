@@ -30,10 +30,11 @@ Route.get('/', () => {
 // }).prefix('api/v1/users');
 
 
-Route.resource('api/v1/users','UserController').apiOnly();
-Route.resource('api/v1/inventories','InventorieController').apiOnly();
-Route.resource('api/v1/products','ProductController').apiOnly();
-Route.resource('api/v1/transactions','TransactionController').apiOnly();
-Route.resource('api/v1/sales','SaleController').apiOnly();
+Route.resource('api/v1/users','UserController').apiOnly().middleware('auth');
+Route.resource('api/v1/inventories','InventorieController').apiOnly().middleware('auth');
+Route.resource('api/v1/products','ProductController').apiOnly().middleware('auth');
+Route.resource('api/v1/transactions','TransactionController').apiOnly().middleware('auth');
+Route.resource('api/v1/sales','SaleController').apiOnly().middleware('auth');
 
 Route.post('api/v1/login','UserController.login');
+Route.post('api/v1/registre','UserController.store')
