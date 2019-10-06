@@ -72,6 +72,7 @@ class SaleController {
       //transaction
       transaction.inventory_id = inventory.id
       transaction.type = 2
+      transaction.description = "Add sale"
       transaction.quantity = request.input('quantity')
       await transaction.save();      
       //sale
@@ -145,6 +146,7 @@ class SaleController {
       transaction.quantity = sale.quantity
       transaction.inventory_id = inventory.id
       transaction.type = 3
+      transaction.description = "Add Cancel"
       transaction.save();
       inventory.save();
       sale.save();

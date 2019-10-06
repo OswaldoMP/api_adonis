@@ -80,6 +80,7 @@ class ProductController {
         //Transaction
         transaction.inventory_id = inventory.id
         transaction.type = 1
+        transaction.description = "Add Producto"
         transaction.quantity = request.input('quantity')
         await transaction.save();//create transaction
         return response.json(product);
