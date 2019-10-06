@@ -63,6 +63,7 @@ module.exports = {
   //   },
   //   debug: Env.get('DB_DEBUG', false)
   // },
+  //
 
   mysql:{
     client: 'mysql',
