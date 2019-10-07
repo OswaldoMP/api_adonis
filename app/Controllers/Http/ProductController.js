@@ -11,6 +11,7 @@ const Product = use('App/Models/Product');
 
 const Inventorie = use('App/Models/Inventorie')
 const Transaction = use('App/Models/Transaction')
+const Helpers = use('Helpers')
 
 class ProductController {
   /**
@@ -65,10 +66,18 @@ class ProductController {
         const transaction = new Transaction()
         // console.log('bien')
         //product
+        //-------------
         product.code = data.code
         product.name = data.name
         product.description = data.description
-        product.image = data.image
+        // product.image = data.image
+        //img upload
+        const IMG = request.file('image')
+        product.image = data.code+'-'+data.name+'.'+IMG.subtype
+
+        await IMG.move(Helpers.publicPath('imageProducts/'+user.id), {
+          name: product.image
+        })
         await product.save();
         //Inventory
         inventory.product_id = product.id
@@ -78,7 +87,7 @@ class ProductController {
         inventory.tax = data.tax
         await inventory.save();//create inventory
         //Transaction
-        transaction.inventory_id = inventory.id
+        transaction.inventorie_id = inventory.id
         transaction.type = 1
         transaction.description = "Add Producto"
         transaction.quantity = request.input('quantity')

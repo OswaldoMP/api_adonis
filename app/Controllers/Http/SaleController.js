@@ -24,7 +24,11 @@ class SaleController {
    */
   async index ({ request, response, view }) {
     try {
-      const sale = await Sale.all();
+      const sale = await Sale.query()
+      .with('product')
+      .with('user')
+      .fetch()
+
       return sale;
     } catch (error) {
       return response.send(error);
@@ -59,18 +63,14 @@ class SaleController {
     const sale = new Sale();
     try {
       const data = request.all()
-      // const sale = await Sale.findBy('id',data.id)
-      console.log("bien")
       const transaction = new Transaction()
-      // const product = await Product.findBy('id',data.product_id)
       const inventory = await Inventory.findBy('product_id',data.product_id)
-      console.log(inventory)
       oldQantity = inventory.quantity
       newQuantity = oldQantity - data.quantity
       inventory.quantity = newQuantity
       await inventory.save()
       //transaction
-      transaction.inventory_id = inventory.id
+      transaction.inventorie_id = inventory.id
       transaction.type = 2
       transaction.description = "Add sale"
       transaction.quantity = request.input('quantity')
@@ -105,6 +105,12 @@ class SaleController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    try {
+      const sale = await Sale.findBy('id',params.id)
+      return response.json(sale)
+    } catch (error) {
+      return response.send({message:{status:error}})
+    }
   }
 
   /**
