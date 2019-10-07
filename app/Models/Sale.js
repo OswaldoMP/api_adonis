@@ -12,6 +12,9 @@ class Sale extends Model {
     user(){
         return this.belongsTo('App/Models/User')
     }
+
+
+    //todo biien
 }
 
 module.exports = Sale
